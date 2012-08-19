@@ -5,11 +5,12 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
-using SKYPE4COMLib;
-using AxSKYPE4COMLib;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using AxSKYPE4COMLib;
+using Growl.Connector;
+using SKYPE4COMLib;
 
 namespace SkypeChatClient
 {
@@ -239,10 +240,9 @@ namespace SkypeChatClient
 
         private void debugToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            chatPanel.Controls.Clear();
-            var rich = new RichTextBox();
-            rich.Text = "bunbunbun";
-            chatPanel.Controls.Add(rich);
+            var conn = new GrowlConnector();
+            conn.Register(new Growl.Connector.Application("SkypeChatClient"), new NotificationType[] { new NotificationType("SkypeChatClient", "SkypeChatClient") });
+            conn.Notify(new Notification("SkypeChatClient", "SkypeChatClient", DateTime.Now.ToString(), "Hello", "World"));
         }
 
         string GetCurrentRoomBlob()
