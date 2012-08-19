@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using SKYPE4COMLib;
-using AxSKYPE4COMLib;
 using System.Windows.Forms;
+using AxSKYPE4COMLib;
+using SKYPE4COMLib;
 
 namespace SkypeChatClient
 {
