@@ -19,8 +19,9 @@ namespace SkypeChatClient
         //Key = Blob名, Value = ウィンドウ
         IDictionary<string, RichTextBox> ChatWindow { get; set; }
         IList<ChatRoomInformation> Rooms { get; set; }
-
         ChatClient Client { get; set; }
+
+        const string ApplicationName = "SkypeChatClient";
 
         public MainForm()
         {
@@ -52,8 +53,9 @@ namespace SkypeChatClient
         {
             Client = new ChatClient(skype);
             Client.AttachToSkypeClient();
-            Client.AddMessageReceivedListener(new Baloon(notifyIcon));
+            // Client.AddMessageReceivedListener(new Baloon(notifyIcon));
             Client.AddMessageReceivedListener(new ChatRenderer(this));
+            Client.AddMessageReceivedListener(new GrowlNotificator(ApplicationName));
 
             ReloadDisplayMessages();
         }
@@ -240,9 +242,6 @@ namespace SkypeChatClient
 
         private void debugToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var conn = new GrowlConnector();
-            conn.Register(new Growl.Connector.Application("SkypeChatClient"), new NotificationType[] { new NotificationType("SkypeChatClient", "SkypeChatClient") });
-            conn.Notify(new Notification("SkypeChatClient", "SkypeChatClient", DateTime.Now.ToString(), "Hello", "World"));
         }
 
         string GetCurrentRoomBlob()
