@@ -11,7 +11,6 @@ using AxSKYPE4COMLib;
 
 namespace SkypeChatClient
 {
-    // TODO: クラスの分離, 副作用のある関数を減らす, リファクタリング
     public partial class MainForm : Form
     {
         //チャットリストウィンドウ。Key = Blob名, Value = ウィンドウ
@@ -30,6 +29,7 @@ namespace SkypeChatClient
             this.FormClosing += new FormClosingEventHandler(this.MainForm_Closed);
             Client = new ChatClient(skype);
             Client.AttachToSkypeClient();
+            Client.AddMessageReceivedListener(new Baloon(notifyIcon));
 
             ChatListWindow = new Dictionary<string, ListBox>();
             ChatTabs = new Dictionary<string, TabPage>();
@@ -48,19 +48,6 @@ namespace SkypeChatClient
                         }
                     }
                 };
-        }
-
-        private void ConnectButton_Click(object sender, EventArgs e)
-        {
-            Init();
-        }
-
-        /// <summary>
-        /// 初期化処理
-        /// </summary>
-        void Init()
-        {
-            AddMessageStatusHandler(skype);
         }
 
         /// <summary>
@@ -84,36 +71,6 @@ namespace SkypeChatClient
         }
 
         /// <summary>
-        /// チャットをバルーンとして表示させるようにします。
-        /// </summary>
-        /// <param name="skype"></param>
-        void AddMessageStatusHandler(AxSkype skype)
-        {
-            skype.MessageStatus += new AxSKYPE4COMLib._ISkypeEvents_MessageStatusEventHandler((a, b) =>
-            {
-                ChatMessageClass chat = b.pMessage as ChatMessageClass;
-                if (chat.Status == TChatMessageStatus.cmsReceived)
-                {
-                    notifyIcon.BalloonTipTitle = chat.Sender.Handle + "(" + chat.Chat.FriendlyName + ")";
-                    notifyIcon.BalloonTipText = chat.Body;
-                    notifyIcon.ShowBalloonTip(1000);
-                }
-            });
-        }
-
-        /// <summary>
-        /// チャット内のメッセージを、GUIラベルに表示させます。
-        /// </summary>
-        /// <param name="text"></param>
-        void SetChatMessage(string text)
-        {
-            var m = text.Substring(12);
-            var nameAndMessage = m.Split(new char[] { ':' }, 2);
-            senderNameLabel.Text = nameAndMessage[0];
-            chatMessageBox.Text = nameAndMessage[1].TrimStart(' ');
-        }
-
-        /// <summary>
         /// 新しいチャットウィンドウタブを作成します。
         /// </summary>
         /// <param name="blob"></param>
@@ -132,7 +89,7 @@ namespace SkypeChatClient
                 var box = obj as ListBox;
                 try
                 {
-                    SetChatMessage(box.SelectedItem.ToString());
+                    //SetChatMessage(box.SelectedItem.ToString());
                 }
                 catch
                 { }
@@ -142,7 +99,7 @@ namespace SkypeChatClient
                 var box = obj as ListBox;
                 try
                 {
-                    SetChatMessage(box.SelectedItem.ToString());
+                    //SetChatMessage(box.SelectedItem.ToString());
                 }
                 catch
                 { }
@@ -166,30 +123,25 @@ namespace SkypeChatClient
 
         private void ChatTabControl_SelectedIndexChanged(object sender, EventArgs e)
         {
-            try
-            {
-                var tab = sender as TabControl;
-                SelectedTabIndex = tab.SelectedIndex;
-                if (tab != null)
-                {
-                    var blob = BlobList[SelectedTabIndex];
-                    SetNotificationMessage("Selected Tab: " + Messages[blob].First().Chat.FriendlyName);
-                    var messages = Messages[blob];
-                }
-            }
-            catch
-            {
-            }
+            //try
+            //{
+            //    var tab = sender as TabControl;
+            //    SelectedTabIndex = tab.SelectedIndex;
+            //    if (tab != null)
+            //    {
+            //        var blob = BlobList[SelectedTabIndex];
+            //        SetNotificationMessage("Selected Tab: " + Messages[blob].First().Chat.FriendlyName);
+            //        var messages = Messages[blob];
+            //    }
+            //}
+            //catch
+            //{
+            //}
         }
 
         private void SetNotificationMessage(string text)
         {
             toolStripStatusLabel.Text = text;
-        }
-
-        private void reloadButton_Click(object sender, EventArgs e)
-        {
-            ReloadAllMessages();
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -241,18 +193,18 @@ namespace SkypeChatClient
 
         private void notifyIcon_BalloonTipClicked(object sender, EventArgs e)
         {
-            // 受信したチャットメッセージを表示するタブを設定
-            try
-            {
-                ChatTabControl.SelectedTab = ChatTabs[RecentReceivedChatBlob];
-                // メインウィンドウを表示
-                this.WindowState = FormWindowState.Normal;
-                this.Activate();
-            }
-            catch
-            {
-                MessageBox.Show("タブが存在しませんでした。");
-            }
+            //// 受信したチャットメッセージを表示するタブを設定
+            //try
+            //{
+            //    ChatTabControl.SelectedTab = ChatTabs[RecentReceivedChatBlob];
+            //    // メインウィンドウを表示
+            //    this.WindowState = FormWindowState.Normal;
+            //    this.Activate();
+            //}
+            //catch
+            //{
+            //    MessageBox.Show("タブが存在しませんでした。");
+            //}
         }
 
     }

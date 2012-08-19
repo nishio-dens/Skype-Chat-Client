@@ -39,7 +39,7 @@ namespace SkypeChatClient
 
     public interface MessageReceivedListener
     {
-        public void ActionWhenReceivedMessage(IChatMessage message);
+        void ActionWhenReceivedMessage(IChatMessage message);
     }
 
     public class ChatClient
