@@ -131,6 +131,33 @@ namespace SkypeChatClient
             }
         }
 
+        /// <summary>
+        /// メッセージ本文、ハンドル名、タイムスタンプに指定したキーワードを含んでいるメッセージを返します。
+        /// </summary>
+        /// <param name="blob"></param>
+        /// <param name="searchWord"></param>
+        /// <returns></returns>
+        public IEnumerable<IChatMessage> SearchMessages(string searchWord)
+        {
+            return ReceivedMessages
+                .Where(i => i.Body.Contains(searchWord) ||
+                    i.FromHandle.Contains(searchWord) ||
+                    i.Timestamp.ToString().Contains(searchWord))
+                .OrderBy(i => i.Timestamp);
+        }
+
+        /// <summary>
+        /// メッセージ本文、ハンドル名、タイムスタンプに指定したキーワードを含んでいるメッセージを返します。
+        /// </summary>
+        /// <param name="blob"></param>
+        /// <param name="searchWord"></param>
+        /// <returns></returns>
+        public IEnumerable<IChatMessage> SearchMessages(string blob, string searchWord)
+        {
+            return SearchMessages(searchWord)
+                .Where(i => i.Chat.Blob == blob);
+        }
+
         public IEnumerable<string> GetBlobs()
         {
             return ReceivedMessages.Select(i => i.Chat.Blob)
