@@ -30,13 +30,14 @@ namespace SkypeChatClient
         //既に購読したメッセージ
         IList<int> AlreadyReceivedMessage { get; set; }
 
-        ChatClient Client { get; private set; }
+        ChatClient Client { get; set; }
 
         public MainForm()
         {
             InitializeComponent();
             this.FormClosing += new FormClosingEventHandler(this.MainForm_Closed);
-            Client = new ChatClient();
+            Client = new ChatClient(skype);
+            Client.AttachToSkypeClient();
 
             Messages = new Dictionary<string, IList<IChatMessage>>();
             ChatListWindow = new Dictionary<string, ListBox>();
@@ -81,27 +82,6 @@ namespace SkypeChatClient
         /// </summary>
         void Init()
         {
-            if (skype.Client.IsRunning == false)
-            {
-                if (MessageBox.Show("Skypeを起動してもよろしいですか？", "Client", MessageBoxButtons.YesNo) == DialogResult.Yes)
-                {
-                    skype.Client.Start();
-                }
-                else
-                {
-                    return;
-                }
-            }
-            try
-            {
-                //skype初期化
-                skype.Attach();
-            }
-            catch
-            {
-                MessageBox.Show("Skypeと連携できませんでした。本プログラムからSkypeにアクセスできるよう許可してください。", "Error");
-                return;
-            }
             ReloadAllMessages();
             //オンラインユーザ一覧
             foreach (Group g in skype.Groups)
@@ -402,7 +382,7 @@ namespace SkypeChatClient
                 {
                     var blob = BlobList[SelectedTabIndex];
                     var firstMessage = Messages[blob].First();
-                    ChatClient.SendMessage(firstMessage.Chat, text);
+                    firstMessage.Chat.SendMessage(text);
                     //チャットを消す
                     ChatBox.Clear();
                 }
