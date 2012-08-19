@@ -120,6 +120,12 @@ namespace SkypeChatClient
             }
         }
 
+        public IEnumerable<string> GetBlobs()
+        {
+            return ReceivedMessages.Select(i => i.Chat.Blob)
+                .Distinct();
+        }
+
         public void ReloadAllMessages()
         {
             UpdateChatGroups();
