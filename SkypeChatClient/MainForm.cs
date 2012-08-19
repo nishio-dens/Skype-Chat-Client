@@ -83,21 +83,7 @@ namespace SkypeChatClient
         void Init()
         {
             ReloadAllMessages();
-            //オンラインユーザ一覧
-            foreach (Group g in skype.Groups)
-            {
-                UserList.Items.Clear();
-                var userList = new List<string>();
-                foreach (User user in g.OnlineUsers)
-                {
-                    userList.Add(user.Handle);
-                }
-                var users = userList.Distinct().OrderBy(p => p.ToString());
-                foreach (var u in users)
-                {
-                    UserList.Items.Add(u);
-                }
-            }
+
             //メッセージ通知追加
             AddNewMessageToList(skype);
             AddMessageStatusHandler(skype);

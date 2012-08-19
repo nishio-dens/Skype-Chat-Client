@@ -50,11 +50,29 @@ namespace SkypeChatClient
             }
         }
 
+        /// <summary>
+        /// オンラインユーザのハンドル名を取得します。
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<String> GetOnlineUserNandleName()
+        {
+            var handles = new List<String>();
+            foreach (Group group in Skype.Groups)
+            {
+                foreach (User user in group.OnlineUsers)
+                {
+                    handles.Add(user.Handle);
+                }
+            }
+
+            return handles.Distinct()
+                .OrderBy(s => s);
+        }
+
         public void ReloadAllMessages()
         {
             throw new NotImplementedException();
         }
-
 
     }
 }
