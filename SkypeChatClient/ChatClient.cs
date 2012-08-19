@@ -10,6 +10,20 @@ namespace SkypeChatClient
 {
     public static class ChatClientExtensions
     {
+        /// <summary>
+        /// 指定したチャット内の全メッセージを取得します。
+        /// </summary>
+        /// <param name="chat"></param>
+        /// <returns></returns>
+        public static IEnumerable<IChatMessage> GetMessages(this Chat chat)
+        {
+            var messages = new List<IChatMessage>();
+            foreach (IChatMessage message in chat.Messages)
+            {
+                messages.Add(message);
+            }
+            return messages;
+        }
     }
 
     public class ChatClient
@@ -17,11 +31,13 @@ namespace SkypeChatClient
         AxSkype Skype { get; set; }
 
         IList<IChatMessage> ReceivedMessages { get; set; }
+        IList<Chat> ChatGroups { get; set; }
 
         public ChatClient(AxSkype skype)
         {
             Skype = skype;
             ReceivedMessages = new List<IChatMessage>();
+            ChatGroups = new List<Chat>();
         }
 
         /// <summary>
@@ -106,8 +122,18 @@ namespace SkypeChatClient
 
         public void ReloadAllMessages()
         {
-            throw new NotImplementedException();
+            UpdateChatGroups();
+            ReceivedMessages = ChatGroups.SelectMany(c => c.GetMessages())
+                .ToList();
         }
 
+        void UpdateChatGroups()
+        {
+            ChatGroups.Clear();
+            foreach (Chat chat in Skype.Chats)
+            {
+                ChatGroups.Add(chat);
+            }
+        }
     }
 }
