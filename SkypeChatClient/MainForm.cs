@@ -81,40 +81,7 @@ namespace SkypeChatClient
         {
             ReloadAllMessages();
 
-            //メッセージ通知追加
-            AddNewMessageToList(skype);
             AddMessageStatusHandler(skype);
-        }
-
-        /// <summary>
-        /// 新規メッセージが到着したら、メッセージリストに追加します。
-        /// </summary>
-        /// <param name="skype"></param>
-        void AddNewMessageToList(AxSkype skype)
-        {
-            skype.MessageStatus += new AxSKYPE4COMLib._ISkypeEvents_MessageStatusEventHandler((a, b) =>
-            {
-                ChatMessageClass chat = b.pMessage as ChatMessageClass;
-                //既に存在するメッセージは無視
-                if (AlreadyReceivedMessage.Where(i => i == chat.Id).Count() >= 1)
-                {
-                    return;
-                }
-                AlreadyReceivedMessage.Add(chat.Id);
-                var list = GetChatListWindow(chat.Chat.Blob, chat.Chat.FriendlyName);
-                list.Items.Add(GetChatFormattedMessage(chat));
-                //スクロールバーを一番下にする
-                if (autoScrollCheckBox.CheckState == CheckState.Checked)
-                {
-                    list.SelectedIndex = list.Items.Count - 1;
-                }
-                //メッセージを保存しておきます
-                if (!Messages.ContainsKey(chat.Chat.Blob))
-                {
-                    Messages.Add(chat.Chat.Blob, new List<IChatMessage>());
-                }
-                Messages[chat.Chat.Blob].Add(chat);
-            });
         }
 
         /// <summary>
