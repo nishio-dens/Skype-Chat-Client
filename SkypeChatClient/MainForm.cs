@@ -14,10 +14,6 @@ namespace SkypeChatClient
     // TODO: クラスの分離, 副作用のある関数を減らす, リファクタリング
     public partial class MainForm : Form
     {
-        //チャット及びチャットグループ一覧
-        IList<Chat> Chats { get; set; }
-        //メッセージ一覧。Key = Blob名, Value = メッセージ一覧
-        IDictionary<string, IList<IChatMessage>> Messages { get; set; }
         //チャットリストウィンドウ。Key = Blob名, Value = ウィンドウ
         IDictionary<string, ListBox> ChatListWindow { get; set; }
         IDictionary<string, TabPage> ChatTabs { get; set; }
@@ -37,10 +33,8 @@ namespace SkypeChatClient
             Client = new ChatClient(skype);
             Client.AttachToSkypeClient();
 
-            Messages = new Dictionary<string, IList<IChatMessage>>();
             ChatListWindow = new Dictionary<string, ListBox>();
             ChatTabs = new Dictionary<string, TabPage>();
-            Chats = new List<Chat>();
             BlobList = new List<string>();
             SelectedTabIndex = 0;
 
@@ -61,17 +55,6 @@ namespace SkypeChatClient
         private void ConnectButton_Click(object sender, EventArgs e)
         {
             Init();
-        }
-
-        string GetChatFormattedMessage(IChatMessage message)
-        {
-            return String.Format("{0:00}/{1:00}/{2:00}:{3:00} {4, -15}: {5}",
-                        message.Timestamp.Month,
-                        message.Timestamp.Day,
-                        message.Timestamp.Hour,
-                        message.Timestamp.Minute,
-                        message.FromHandle,
-                        message.Body);
         }
 
         /// <summary>
@@ -187,57 +170,6 @@ namespace SkypeChatClient
             BlobList.Add(blob);
         }
 
-        /// <summary>
-        /// チャット内のメッセージ一覧を取得します。
-        /// </summary>
-        /// <param name="chat"></param>
-        IList<IChatMessage> GetMessageFromChat(Chat chat)
-        {
-            var messages = new List<IChatMessage>();
-            foreach (IChatMessage message in chat.Messages)
-            {
-                messages.Add(message);
-            }
-            return messages;
-        }
-
-        /// <summary>
-        /// すべてのメッセージを再読み込みし、チャットリストに追加します。
-        /// </summary>
-        void ReloadAllMessages()
-        {
-            //チャット及びチャットグループ一覧の追加
-            Chats.Clear();
-            foreach (Chat chat in skype.Chats)
-            {
-                Chats.Add(chat);
-            }
-            //チャット内からメッセージ一覧を取得
-            foreach (var chat in Chats)
-            {
-                Messages[chat.Blob] = new List<IChatMessage>();
-                foreach (var item in GetMessageFromChat(chat))
-                {
-                    Messages[chat.Blob].Add(item);
-                }
-            }
-            //既にチャットリストが存在していたら、いったん中身を削除
-            foreach (var chatList in ChatListWindow.Values)
-            {
-                chatList.Items.Clear();
-            }
-            //取得したメッセージをチャットリストに追加
-            foreach (var blob in Messages.Keys)
-            {
-                var messages = Messages[blob].OrderBy(m => m.Timestamp);
-                foreach (var m in messages)
-                {
-                    var list = GetChatListWindow(m.Chat.Blob, m.Chat.FriendlyName);
-                    list.Items.Add(GetChatFormattedMessage(m));
-                }
-            }
-        }
-
         private void FilterApplyButton_Click(object sender, EventArgs e)
         {
             ApplyFilter();
@@ -331,8 +263,7 @@ namespace SkypeChatClient
                 if (textNoSpace.Replace('\n', ' ').Replace('\r', ' ').Replace(" ", "").Length > 0)
                 {
                     var blob = BlobList[SelectedTabIndex];
-                    var firstMessage = Messages[blob].First();
-                    firstMessage.Chat.SendMessage(text);
+                    Client.SendMessage(blob, text);
                     //チャットを消す
                     ChatBox.Clear();
                 }
