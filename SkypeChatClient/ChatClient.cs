@@ -86,6 +86,24 @@ namespace SkypeChatClient
                 .OrderBy(s => s);
         }
 
+        /// <summary>
+        /// 指定したBlobをもつチャットルームに対してメッセージを発信します。
+        /// </summary>
+        /// <param name="selectedBlob"></param>
+        /// <param name="text"></param>
+        public void SendMessage(string selectedBlob, string text)
+        {
+            var chat = ReceivedMessages.FirstOrDefault(i => i.Chat.Blob == selectedBlob);
+            if (chat != null)
+            {
+                chat.Chat.SendMessage(text);
+            }
+            else
+            {
+                throw new InvalidOperationException("発言先が存在しませんでした。");
+            }
+        }
+
         public void ReloadAllMessages()
         {
             throw new NotImplementedException();
