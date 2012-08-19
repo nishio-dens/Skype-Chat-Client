@@ -8,14 +8,17 @@ using System.Windows.Forms;
 
 namespace SkypeChatClient
 {
+    public static class ChatClientExtensions
+    {
+    }
+
     public class ChatClient
     {
-        AxSkype SkypeClient { get; set; }
+        AxSkype Skype { get; set; }
 
         public ChatClient(AxSkype skype)
         {
-            SkypeClient = skype;
-            AttachToSkypeClient();
+            Skype = skype;
         }
 
         /// <summary>
@@ -24,20 +27,20 @@ namespace SkypeChatClient
         /// <param name="skype"></param>
         public void AttachToSkypeClient()
         {
-            if (!SkypeClient.Client.IsRunning)
+            if (!Skype.Client.IsRunning)
             {
                 if (MessageBox.Show("Skypeを起動してもよろしいですか？", "Client", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
-                    SkypeClient.Client.Start();
+                    Skype.Client.Start();
                 }
                 else
                 {
-                    return;
+                    throw new InvalidOperationException("Skypeを起動していないため、連携に失敗しました。");
                 }
             }
             try
             {
-                SkypeClient.Attach();
+                Skype.Attach();
             }
             catch
             {
