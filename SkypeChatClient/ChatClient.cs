@@ -37,18 +37,26 @@ namespace SkypeChatClient
         }
     }
 
+    public interface MessageReceivedListener
+    {
+        public void ActionWhenReceivedMessage(IChatMessage message);
+    }
+
     public class ChatClient
     {
         AxSkype Skype { get; set; }
 
         IList<IChatMessage> ReceivedMessages { get; set; }
         IList<Chat> ChatGroups { get; set; }
+        IChatMessage RecentlyReceivedMessage { get; set; }
+        IList<MessageReceivedListener> ReceivedMessageListeners { get; set; }
 
         public ChatClient(AxSkype skype)
         {
             Skype = skype;
             ReceivedMessages = new List<IChatMessage>();
             ChatGroups = new List<Chat>();
+            ReceivedMessageListeners = new List<MessageReceivedListener>();
         }
 
         /// <summary>
@@ -91,7 +99,30 @@ namespace SkypeChatClient
                     return;
                 }
                 ReceivedMessages.Add(chat);
+                RecentlyReceivedMessage = chat;
+
+                if (chat.Status == TChatMessageStatus.cmsReceived)
+                {
+                    foreach (var listener in ReceivedMessageListeners)
+                    {
+                        listener.ActionWhenReceivedMessage(chat);
+                    }
+                }
             });
+        }
+
+        /// <summary>
+        /// メッセージを受信した時に処理を行うリスナーを追加します。
+        /// </summary>
+        /// <param name="receiver"></param>
+        public void AddMessageReceivedListener(MessageReceivedListener receiver)
+        {
+            ReceivedMessageListeners.Add(receiver);
+        }
+
+        public bool RemoveMessageReceivedListener(MessageReceivedListener receiver)
+        {
+            return ReceivedMessageListeners.Remove(receiver);
         }
 
         /// <summary>
