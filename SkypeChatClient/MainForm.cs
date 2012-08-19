@@ -27,8 +27,6 @@ namespace SkypeChatClient
         int SelectedTabIndex { get; set; }
         //最近受信したチャットのblob
         string RecentReceivedChatBlob { get; set; }
-        //既に購読したメッセージ
-        IList<int> AlreadyReceivedMessage { get; set; }
 
         ChatClient Client { get; set; }
 
@@ -44,7 +42,6 @@ namespace SkypeChatClient
             ChatTabs = new Dictionary<string, TabPage>();
             Chats = new List<Chat>();
             BlobList = new List<string>();
-            AlreadyReceivedMessage = new List<int>();
             SelectedTabIndex = 0;
 
             ChatBox.KeyUp += (obj, e) =>

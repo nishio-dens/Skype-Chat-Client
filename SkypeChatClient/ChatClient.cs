@@ -16,9 +16,12 @@ namespace SkypeChatClient
     {
         AxSkype Skype { get; set; }
 
+        IList<IChatMessage> ReceivedMessages { get; set; }
+
         public ChatClient(AxSkype skype)
         {
             Skype = skype;
+            ReceivedMessages = new List<IChatMessage>();
         }
 
         /// <summary>
@@ -41,6 +44,7 @@ namespace SkypeChatClient
             try
             {
                 Skype.Attach();
+                SetChatMessageStatusEventHandler();
             }
             catch
             {
@@ -48,6 +52,19 @@ namespace SkypeChatClient
                     "Skypeと連携できませんでした。本プログラムからSkypeにアクセスできるよう許可してください。",
                     "Error");
             }
+        }
+
+        void SetChatMessageStatusEventHandler()
+        {
+            Skype.MessageStatus += new AxSKYPE4COMLib._ISkypeEvents_MessageStatusEventHandler((_, statusEvent) =>
+            {
+                var chat = statusEvent.pMessage as ChatMessageClass;
+                if (ReceivedMessages.Where(i => i.Id == chat.Id).Any())
+                {
+                    return;
+                }
+                ReceivedMessages.Add(chat);
+            });
         }
 
         /// <summary>
