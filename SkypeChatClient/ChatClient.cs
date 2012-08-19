@@ -149,12 +149,12 @@ namespace SkypeChatClient
         /// </summary>
         /// <param name="selectedBlob"></param>
         /// <param name="text"></param>
-        public void SendMessage(string selectedBlob, string text)
+        public ChatMessage SendMessage(string selectedBlob, string text)
         {
             var chat = ReceivedMessages.FirstOrDefault(i => i.Chat.Blob == selectedBlob);
             if (chat != null)
             {
-                chat.Chat.SendMessage(text);
+                return chat.Chat.SendMessage(text);
             }
             else
             {

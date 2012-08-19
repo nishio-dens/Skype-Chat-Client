@@ -52,12 +52,9 @@ namespace SkypeChatClient
             Client = new ChatClient(skype);
             Client.AttachToSkypeClient();
             Client.AddMessageReceivedListener(new Baloon(notifyIcon));
+            Client.AddMessageReceivedListener(new ChatRenderer(this));
 
             ReloadDisplayMessages();
-        }
-
-        void AddReceivedMessagesToChatWindow()
-        {
         }
 
         void ReloadDisplayMessages()
@@ -135,9 +132,24 @@ namespace SkypeChatClient
             ChatWindow.Add(blobName, richTextBox);
         }
 
+        /// <summary>
+        /// 新しく受信したメッセージをチャットウィンドウに表示します。
+        /// </summary>
+        /// <param name="blobName"></param>
+        /// <param name="message"></param>
+        public void AppendDecoratedChatMessage(string blobName, IChatMessage message)
+        {
+            if (!ChatWindow.ContainsKey(blobName))
+            {
+                CreateNewChatTextWindow(blobName);
+                ReloadRooms();
+            }
+            AppendDecoratedChatMessage(ChatWindow[blobName], message);
+        }
+
         void AppendDecoratedChatMessage(RichTextBox richTextBox, IChatMessage message)
         {
-            richTextBox.SelectionColor = Color.FromArgb(190, 190, 190);
+            richTextBox.SelectionColor = Color.FromArgb(150, 150, 150);
             richTextBox.AppendText(
                 String.Format("{0:00}/{1:00}/{2:00}:{3:00} ",
                     message.Timestamp.Month,
@@ -203,8 +215,9 @@ namespace SkypeChatClient
                 if (textNoSpace.Replace('\n', ' ').Replace('\r', ' ').Replace(" ", "").Length > 0)
                 {
                     var blob = GetCurrentRoomBlob();
-                    Client.SendMessage(blob, text);
+                    var message = Client.SendMessage(blob, text);
                     ChatBox.Clear();
+                    AppendDecoratedChatMessage(blob, message);
                 }
             }
             catch

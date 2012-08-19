@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="Baloon.cs" />
     <Compile Include="ChatClient.cs" />
+    <Compile Include="ChatRenderer.cs" />
     <Compile Include="ChatRoomInformation.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
