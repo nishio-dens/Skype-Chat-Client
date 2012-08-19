@@ -42,10 +42,10 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.クライアントToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AttachSkypeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.メッセージ再読み込みToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ReloadMessagesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ExitClientToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.chatPanel = new System.Windows.Forms.Panel();
             this.debugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.chatPanel = new System.Windows.Forms.Panel();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.skype)).BeginInit();
             this.menuStrip1.SuspendLayout();
@@ -53,7 +53,7 @@
             // 
             // RoomList
             // 
-            this.RoomList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            this.RoomList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.RoomList.Font = new System.Drawing.Font("MS UI Gothic", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.RoomList.FormattingEnabled = true;
@@ -63,10 +63,11 @@
             this.RoomList.Name = "RoomList";
             this.RoomList.Size = new System.Drawing.Size(192, 499);
             this.RoomList.TabIndex = 1;
+            this.RoomList.SelectedIndexChanged += new System.EventHandler(this.RoomList_SelectedIndexChanged);
             // 
             // label1
             // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(548, 8);
@@ -77,7 +78,7 @@
             // 
             // ChatBox
             // 
-            this.ChatBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+            this.ChatBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.ChatBox.Location = new System.Drawing.Point(5, 474);
             this.ChatBox.Multiline = true;
@@ -156,7 +157,7 @@
             // 
             this.クライアントToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.AttachSkypeToolStripMenuItem,
-            this.メッセージ再読み込みToolStripMenuItem,
+            this.ReloadMessagesToolStripMenuItem,
             this.ExitClientToolStripMenuItem,
             this.debugToolStripMenuItem});
             this.クライアントToolStripMenuItem.Name = "クライアントToolStripMenuItem";
@@ -170,11 +171,12 @@
             this.AttachSkypeToolStripMenuItem.Text = "Skype連携を行う";
             this.AttachSkypeToolStripMenuItem.Click += new System.EventHandler(this.AttachSkypeToolStripMenuItem_Click);
             // 
-            // メッセージ再読み込みToolStripMenuItem
+            // ReloadMessagesToolStripMenuItem
             // 
-            this.メッセージ再読み込みToolStripMenuItem.Name = "メッセージ再読み込みToolStripMenuItem";
-            this.メッセージ再読み込みToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
-            this.メッセージ再読み込みToolStripMenuItem.Text = "メッセージ再読み込み";
+            this.ReloadMessagesToolStripMenuItem.Name = "ReloadMessagesToolStripMenuItem";
+            this.ReloadMessagesToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
+            this.ReloadMessagesToolStripMenuItem.Text = "メッセージ再読み込み";
+            this.ReloadMessagesToolStripMenuItem.Click += new System.EventHandler(this.ReloadMessagesToolStripMenuItem_Click);
             // 
             // ExitClientToolStripMenuItem
             // 
@@ -183,22 +185,22 @@
             this.ExitClientToolStripMenuItem.Text = "クライアントを終了する";
             this.ExitClientToolStripMenuItem.Click += new System.EventHandler(this.ExitClientToolStripMenuItem_Click);
             // 
-            // chatPanel
-            // 
-            this.chatPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.chatPanel.Location = new System.Drawing.Point(5, 35);
-            this.chatPanel.Name = "chatPanel";
-            this.chatPanel.Size = new System.Drawing.Size(513, 433);
-            this.chatPanel.TabIndex = 20;
-            // 
             // debugToolStripMenuItem
             // 
             this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
             this.debugToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
             this.debugToolStripMenuItem.Text = "Debug";
             this.debugToolStripMenuItem.Click += new System.EventHandler(this.debugToolStripMenuItem_Click);
+            // 
+            // chatPanel
+            // 
+            this.chatPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chatPanel.Location = new System.Drawing.Point(5, 35);
+            this.chatPanel.Name = "chatPanel";
+            this.chatPanel.Size = new System.Drawing.Size(513, 433);
+            this.chatPanel.TabIndex = 20;
             // 
             // MainForm
             // 
@@ -243,7 +245,7 @@
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem クライアントToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem AttachSkypeToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem メッセージ再読み込みToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ReloadMessagesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ExitClientToolStripMenuItem;
         private System.Windows.Forms.Panel chatPanel;
         private System.Windows.Forms.ToolStripMenuItem debugToolStripMenuItem;

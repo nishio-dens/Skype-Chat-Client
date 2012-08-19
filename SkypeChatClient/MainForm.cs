@@ -15,13 +15,9 @@ namespace SkypeChatClient
 {
     public partial class MainForm : Form
     {
-        //チャットリストウィンドウ。Key = Blob名, Value = ウィンドウ
-        IDictionary<string, ListBox> ChatListWindow { get; set; }
+        //Key = Blob名, Value = ウィンドウ
         IDictionary<string, RichTextBox> ChatWindow { get; set; }
-        //タブの順番通りのBlob
-        IList<string> BlobList { get; set; }
-        //現在選択しているタブ
-        int SelectedTabIndex { get; set; }
+        IList<ChatRoomInformation> Rooms { get; set; }
 
         ChatClient Client { get; set; }
 
@@ -30,10 +26,8 @@ namespace SkypeChatClient
             InitializeComponent();
             this.FormClosing += new FormClosingEventHandler(this.MainForm_Closed);
 
-            ChatListWindow = new Dictionary<string, ListBox>();
             ChatWindow = new Dictionary<string, RichTextBox>();
-            BlobList = new List<string>();
-            SelectedTabIndex = 0;
+            Rooms = new List<ChatRoomInformation>();
 
             ChatBox.KeyUp += (obj, e) =>
             {
@@ -55,28 +49,52 @@ namespace SkypeChatClient
 
         void AttachSkype()
         {
-            //Client = new ChatClient(skype);
-            //Client.AttachToSkypeClient();
-            //Client.AddMessageReceivedListener(new Baloon(notifyIcon));
+            Client = new ChatClient(skype);
+            Client.AttachToSkypeClient();
+            Client.AddMessageReceivedListener(new Baloon(notifyIcon));
 
+            ReloadDisplayMessages();
+        }
+
+        void AddReceivedMessagesToChatWindow()
+        {
+        }
+
+        void ReloadDisplayMessages()
+        {
             SetNotificationMessage("メッセージの更新を行います。");
-            //Client.ReloadAllMessages();
-            //ReloadRooms();
-            //ReloadMessages();
+            Client.ReloadAllMessages();
+            ReloadRooms();
+            ReloadMessages();
+        }
 
-
+        private void ReloadMessagesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ReloadDisplayMessages();
         }
 
         void ReloadRooms()
         {
             var rooms = Client.GetChatRooms()
-                .OrderByDescending(t => t.Timestamp)
-                .Select(i => i.FriendlyName);
+                .OrderByDescending(t => t.ActivityTimestamp);
 
-            RoomList.Items.Clear();
             foreach (var room in rooms)
             {
-                RoomList.Items.Add(room);
+                Rooms.Add(new ChatRoomInformation
+                {
+                    Blob = room.Blob,
+                    FriendlyRoomName = room.FriendlyName
+                });
+            }
+            ReloadRoomsList();
+        }
+
+        void ReloadRoomsList()
+        {
+            RoomList.Items.Clear();
+            foreach (var room in Rooms)
+            {
+                RoomList.Items.Add(room.FriendlyRoomName);
             }
         }
 
@@ -94,8 +112,9 @@ namespace SkypeChatClient
 
             foreach (var message in messages)
             {
-                ChatWindow[message.Chat.Blob].AppendText(message.Body);
+                AppendDecoratedChatMessage(ChatWindow[message.Chat.Blob], message);
             }
+            SetCurrentChatRoom(Rooms.First().Blob);
         }
 
         void CreateNewChatTextWindow(string blobName)
@@ -114,6 +133,40 @@ namespace SkypeChatClient
             richTextBox.SelectionStart = richTextBox.Text.Length;
             richTextBox.ScrollToCaret();
             ChatWindow.Add(blobName, richTextBox);
+        }
+
+        void AppendDecoratedChatMessage(RichTextBox richTextBox, IChatMessage message)
+        {
+            richTextBox.SelectionColor = Color.FromArgb(190, 190, 190);
+            richTextBox.AppendText(
+                String.Format("{0:00}/{1:00}/{2:00}:{3:00} ",
+                    message.Timestamp.Month,
+                    message.Timestamp.Day,
+                    message.Timestamp.Hour,
+                    message.Timestamp.Minute,
+                    message.FromHandle,
+                    message.Body));
+
+            richTextBox.SelectionColor = Color.FromArgb(65, 105, 225);
+            var name = String.Empty;
+            if (message.FromDisplayName != null)
+            {
+                name = message.FromDisplayName;
+            }
+            else
+            {
+                name = message.FromHandle;
+            }
+            richTextBox.AppendText(String.Format("({0}) ", name));
+
+            richTextBox.SelectionColor = Color.Black;
+            richTextBox.AppendText(String.Format("{0}\r\n", message.Body));
+        }
+
+        void SetCurrentChatRoom(string blobName)
+        {
+            chatPanel.Controls.Clear();
+            chatPanel.Controls.Add(ChatWindow[blobName]);
         }
 
         private void SetNotificationMessage(string text)
@@ -149,7 +202,7 @@ namespace SkypeChatClient
                 var textNoSpace = text.ToString();
                 if (textNoSpace.Replace('\n', ' ').Replace('\r', ' ').Replace(" ", "").Length > 0)
                 {
-                    var blob = BlobList[SelectedTabIndex];
+                    var blob = GetCurrentRoomBlob();
                     Client.SendMessage(blob, text);
                     ChatBox.Clear();
                 }
@@ -177,6 +230,16 @@ namespace SkypeChatClient
             var rich = new RichTextBox();
             rich.Text = "bunbunbun";
             chatPanel.Controls.Add(rich);
+        }
+
+        string GetCurrentRoomBlob()
+        {
+            return Rooms.ElementAt(RoomList.SelectedIndex).Blob;
+        }
+
+        void RoomList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            SetCurrentChatRoom(GetCurrentRoomBlob());
         }
     }
 }
