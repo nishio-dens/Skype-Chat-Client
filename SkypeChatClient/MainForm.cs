@@ -30,10 +30,13 @@ namespace SkypeChatClient
         //既に購読したメッセージ
         IList<int> AlreadyReceivedMessage { get; set; }
 
+        ChatClient Client { get; private set; }
+
         public MainForm()
         {
             InitializeComponent();
             this.FormClosing += new FormClosingEventHandler(this.MainForm_Closed);
+            Client = new ChatClient();
 
             Messages = new Dictionary<string, IList<IChatMessage>>();
             ChatListWindow = new Dictionary<string, ListBox>();
@@ -387,16 +390,6 @@ namespace SkypeChatClient
         }
 
         /// <summary>
-        /// 指定したチャットに、指定したメッセージを送信します。
-        /// </summary>
-        /// <param name="chat"></param>
-        /// <param name="text"></param>
-        private void SendMessage(Chat chat, string text)
-        {
-            chat.SendMessage(text);
-        }
-
-        /// <summary>
         /// メッセージボックスに入力したメッセージを送信します。
         /// </summary>
         private void SendMessageFromTextBox()
@@ -409,7 +402,7 @@ namespace SkypeChatClient
                 {
                     var blob = BlobList[SelectedTabIndex];
                     var firstMessage = Messages[blob].First();
-                    SendMessage(firstMessage.Chat, text);
+                    ChatClient.SendMessage(firstMessage.Chat, text);
                     //チャットを消す
                     ChatBox.Clear();
                 }
