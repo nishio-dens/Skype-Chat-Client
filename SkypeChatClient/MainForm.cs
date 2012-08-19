@@ -21,8 +21,6 @@ namespace SkypeChatClient
         IList<string> BlobList { get; set; }
         //現在選択しているタブ
         int SelectedTabIndex { get; set; }
-        //最近受信したチャットのblob
-        string RecentReceivedChatBlob { get; set; }
 
         ChatClient Client { get; set; }
 
@@ -62,8 +60,6 @@ namespace SkypeChatClient
         /// </summary>
         void Init()
         {
-            ReloadAllMessages();
-
             AddMessageStatusHandler(skype);
         }
 
@@ -101,8 +97,6 @@ namespace SkypeChatClient
                     notifyIcon.BalloonTipTitle = chat.Sender.Handle + "(" + chat.Chat.FriendlyName + ")";
                     notifyIcon.BalloonTipText = chat.Body;
                     notifyIcon.ShowBalloonTip(1000);
-                    // 最近受信したチャットのブロブ
-                    RecentReceivedChatBlob = chat.Chat.Blob;
                 }
             });
         }
@@ -169,46 +163,6 @@ namespace SkypeChatClient
             list = chatList;
             BlobList.Add(blob);
         }
-
-        private void FilterApplyButton_Click(object sender, EventArgs e)
-        {
-            ApplyFilter();
-        }
-
-        private void clearFilterButton_Click(object sender, EventArgs e)
-        {
-            ClearFilter();
-        }
-
-        void ApplyFilter()
-        {
-            //フィルタを適用します。
-            var blob = BlobList[SelectedTabIndex];
-            var searchWord = filterTextBox.Text;
-            var messages = Messages[blob]
-                .Where(c => c.Body.Contains(searchWord) || c.FromHandle.Contains(searchWord) || c.Timestamp.ToString().Contains(searchWord))
-                .OrderBy(c => c.Timestamp);
-            var list = ChatListWindow[blob];
-            list.Items.Clear();
-            foreach (var m in messages)
-            {
-                list.Items.Add(GetChatFormattedMessage(m));
-            }
-        }
-
-        void ClearFilter()
-        {
-            //フィルタ適用を解除します。
-            var blob = BlobList[SelectedTabIndex];
-            var messages = Messages[blob].OrderBy(c => c.Timestamp);
-            var list = ChatListWindow[blob];
-            list.Items.Clear();
-            foreach (var m in messages)
-            {
-                list.Items.Add(GetChatFormattedMessage(m));
-            }
-        }
-
 
         private void ChatTabControl_SelectedIndexChanged(object sender, EventArgs e)
         {
