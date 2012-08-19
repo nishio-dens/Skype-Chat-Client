@@ -54,11 +54,13 @@
             // 
             this.RoomList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.RoomList.Font = new System.Drawing.Font("MS UI Gothic", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.RoomList.FormattingEnabled = true;
-            this.RoomList.ItemHeight = 12;
-            this.RoomList.Location = new System.Drawing.Point(544, 35);
+            this.RoomList.HorizontalScrollbar = true;
+            this.RoomList.ItemHeight = 15;
+            this.RoomList.Location = new System.Drawing.Point(524, 35);
             this.RoomList.Name = "RoomList";
-            this.RoomList.Size = new System.Drawing.Size(166, 436);
+            this.RoomList.Size = new System.Drawing.Size(192, 499);
             this.RoomList.TabIndex = 1;
             // 
             // label1
@@ -66,7 +68,7 @@
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(542, 8);
+            this.label1.Location = new System.Drawing.Point(548, 8);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(59, 12);
             this.label1.TabIndex = 2;
@@ -80,13 +82,13 @@
             this.ChatBox.Multiline = true;
             this.ChatBox.Name = "ChatBox";
             this.ChatBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.ChatBox.Size = new System.Drawing.Size(535, 129);
+            this.ChatBox.Size = new System.Drawing.Size(513, 129);
             this.ChatBox.TabIndex = 5;
             // 
             // SendChatButton
             // 
             this.SendChatButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.SendChatButton.Location = new System.Drawing.Point(542, 574);
+            this.SendChatButton.Location = new System.Drawing.Point(548, 574);
             this.SendChatButton.Name = "SendChatButton";
             this.SendChatButton.Size = new System.Drawing.Size(167, 29);
             this.SendChatButton.TabIndex = 6;
@@ -101,7 +103,7 @@
             this.toolStripStatusLabel});
             this.statusStrip1.Location = new System.Drawing.Point(0, 616);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(713, 23);
+            this.statusStrip1.Size = new System.Drawing.Size(719, 23);
             this.statusStrip1.TabIndex = 9;
             this.statusStrip1.Text = "statusStrip";
             // 
@@ -119,7 +121,7 @@
             this.ChatTabControl.Location = new System.Drawing.Point(1, 35);
             this.ChatTabControl.Name = "ChatTabControl";
             this.ChatTabControl.SelectedIndex = 0;
-            this.ChatTabControl.Size = new System.Drawing.Size(539, 436);
+            this.ChatTabControl.Size = new System.Drawing.Size(517, 436);
             this.ChatTabControl.TabIndex = 0;
             this.ChatTabControl.SelectedIndexChanged += new System.EventHandler(this.ChatTabControl_SelectedIndexChanged);
             // 
@@ -135,7 +137,7 @@
             this.autoScrollCheckBox.AutoSize = true;
             this.autoScrollCheckBox.Checked = true;
             this.autoScrollCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.autoScrollCheckBox.Location = new System.Drawing.Point(544, 552);
+            this.autoScrollCheckBox.Location = new System.Drawing.Point(550, 552);
             this.autoScrollCheckBox.Name = "autoScrollCheckBox";
             this.autoScrollCheckBox.Size = new System.Drawing.Size(97, 16);
             this.autoScrollCheckBox.TabIndex = 16;
@@ -157,7 +159,7 @@
             this.クライアントToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(713, 26);
+            this.menuStrip1.Size = new System.Drawing.Size(719, 26);
             this.menuStrip1.TabIndex = 18;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -195,7 +197,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(713, 639);
+            this.ClientSize = new System.Drawing.Size(719, 639);
             this.Controls.Add(this.autoScrollCheckBox);
             this.Controls.Add(this.skype);
             this.Controls.Add(this.statusStrip1);

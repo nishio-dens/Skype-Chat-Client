@@ -195,6 +195,12 @@ namespace SkypeChatClient
                 .Distinct();
         }
 
+        public IEnumerable<IChat> GetChatRooms()
+        {
+            return ReceivedMessages.GroupBy(i => i.Chat.Blob)
+                .Select(i => i.First().Chat);
+        }
+
         public void ReloadAllMessages()
         {
             UpdateChatGroups();

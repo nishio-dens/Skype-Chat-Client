@@ -8,6 +8,8 @@ using System.Text;
 using System.Windows.Forms;
 using SKYPE4COMLib;
 using AxSKYPE4COMLib;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SkypeChatClient
 {
@@ -56,6 +58,27 @@ namespace SkypeChatClient
             Client = new ChatClient(skype);
             Client.AttachToSkypeClient();
             Client.AddMessageReceivedListener(new Baloon(notifyIcon));
+
+            SetNotificationMessage("メッセージの更新を行います。");
+            ReloadRoomsAndMessages();
+        }
+
+        void ReloadRoomsAndMessages()
+        {
+            Task.Factory.StartNew(() =>
+            {
+                Client.ReloadAllMessages();
+                var rooms = Client.GetChatRooms()
+                    .OrderByDescending(t => t.Timestamp)
+                    .Select(i => i.FriendlyName);
+
+                RoomList.Items.Clear();
+
+                foreach (var room in rooms)
+                {
+                    RoomList.Items.Add(room);
+                }
+            });
         }
 
         /// <summary>
@@ -172,7 +195,7 @@ namespace SkypeChatClient
         /// <summary>
         /// メッセージボックスに入力したメッセージを送信します。
         /// </summary>
-        private void SendMessageFromTextBox()
+        void SendMessageFromTextBox()
         {
             var text = ChatBox.Text;
             try
@@ -182,7 +205,6 @@ namespace SkypeChatClient
                 {
                     var blob = BlobList[SelectedTabIndex];
                     Client.SendMessage(blob, text);
-                    //チャットを消す
                     ChatBox.Clear();
                 }
             }
