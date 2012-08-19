@@ -17,7 +17,7 @@ namespace SkypeChatClient
     {
         //チャットリストウィンドウ。Key = Blob名, Value = ウィンドウ
         IDictionary<string, ListBox> ChatListWindow { get; set; }
-        IDictionary<string, TabPage> ChatTabs { get; set; }
+        IDictionary<string, RichTextBox> ChatWindow { get; set; }
         //タブの順番通りのBlob
         IList<string> BlobList { get; set; }
         //現在選択しているタブ
@@ -31,7 +31,7 @@ namespace SkypeChatClient
             this.FormClosing += new FormClosingEventHandler(this.MainForm_Closed);
 
             ChatListWindow = new Dictionary<string, ListBox>();
-            ChatTabs = new Dictionary<string, TabPage>();
+            ChatWindow = new Dictionary<string, RichTextBox>();
             BlobList = new List<string>();
             SelectedTabIndex = 0;
 
@@ -55,116 +55,65 @@ namespace SkypeChatClient
 
         void AttachSkype()
         {
-            Client = new ChatClient(skype);
-            Client.AttachToSkypeClient();
-            Client.AddMessageReceivedListener(new Baloon(notifyIcon));
+            //Client = new ChatClient(skype);
+            //Client.AttachToSkypeClient();
+            //Client.AddMessageReceivedListener(new Baloon(notifyIcon));
 
             SetNotificationMessage("メッセージの更新を行います。");
-            ReloadRoomsAndMessages();
+            //Client.ReloadAllMessages();
+            //ReloadRooms();
+            //ReloadMessages();
+
+
         }
 
-        void ReloadRoomsAndMessages()
+        void ReloadRooms()
         {
-            Client.ReloadAllMessages();
             var rooms = Client.GetChatRooms()
                 .OrderByDescending(t => t.Timestamp)
                 .Select(i => i.FriendlyName);
 
             RoomList.Items.Clear();
-
             foreach (var room in rooms)
             {
                 RoomList.Items.Add(room);
             }
         }
 
-        /// <summary>
-        /// チャットメッセージを表示するリストを返します。存在しない場合は新規でリストを作ります。
-        /// </summary>
-        /// <param name="blob"></param>
-        /// <param name="friendlyName"></param>
-        /// <returns></returns>
-        ListBox GetChatListWindow(string blob, string friendlyName)
+        void ReloadMessages()
         {
-            if (ChatListWindow.ContainsKey(blob))
+            ChatWindow.Clear();
+            var blobs = Client.GetBlobs();
+            foreach (var blob in blobs)
             {
-                return ChatListWindow[blob];
+                CreateNewChatTextWindow(blob);
             }
-            ListBox list;
-            TabPage tab;
-            AddNewChatList(blob, friendlyName, out list, out tab);
-            ChatListWindow.Add(blob, list);
-            ChatTabs[blob] = tab;
-            return list;
+
+            var messages = Client.ReceivedMessages
+                .OrderBy(i => i.Timestamp);
+
+            foreach (var message in messages)
+            {
+                ChatWindow[message.Chat.Blob].AppendText(message.Body);
+            }
         }
 
-        /// <summary>
-        /// 新しいチャットウィンドウタブを作成します。
-        /// </summary>
-        /// <param name="blob"></param>
-        /// <param name="friendlyName"></param>
-        /// <param name="list">チャットを表示するリストを作成し、取得します。</param>
-        /// <param name="tab">チャットを表示するタブを作成し、取得します。</param>
-        void AddNewChatList(string blob, string friendlyName, out ListBox list, out TabPage tab)
+        void CreateNewChatTextWindow(string blobName)
         {
-            var chatPage = new TabPage();
-            var chatList = new ListBox();
-            chatList.Dock = DockStyle.Fill;
-            chatList.Font = new Font("ＭＳ ゴシック", 11);
-            chatList.HorizontalScrollbar = true;
-            chatList.Click += (obj, eventHandler) =>
+            if (ChatWindow.ContainsKey(blobName))
             {
-                var box = obj as ListBox;
-                try
-                {
-                    //SetChatMessage(box.SelectedItem.ToString());
-                }
-                catch
-                { }
-            };
-            chatList.KeyUp += (obj, eventHandler) =>
-            {
-                var box = obj as ListBox;
-                try
-                {
-                    //SetChatMessage(box.SelectedItem.ToString());
-                }
-                catch
-                { }
-            };
-
-            if (friendlyName.Length > 0)
-            {
-                chatPage.Text = friendlyName;
+                return;
             }
-            else
-            {
-                chatPage.Text = "NoTitle";
-            }
-            chatPage.Controls.Add(chatList);
-            ChatTabControl.Controls.Add(chatPage);
 
-            tab = chatPage;
-            list = chatList;
-            BlobList.Add(blob);
-        }
-
-        private void ChatTabControl_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            //try
-            //{
-            //    var tab = sender as TabControl;
-            //    SelectedTabIndex = tab.SelectedIndex;
-            //    if (tab != null)
-            //    {
-            //        var blob = BlobList[SelectedTabIndex];
-            //        SetNotificationMessage("Selected Tab: " + Messages[blob].First().Chat.FriendlyName);
-            //        var messages = Messages[blob];
-            //    }
-            //}
-            //catch
-            //{
-            //}
+            var richTextBox = new RichTextBox();
+            richTextBox.Anchor = (AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right);
+            richTextBox.ScrollBars = RichTextBoxScrollBars.Vertical;
+            richTextBox.Width = chatPanel.Width;
+            richTextBox.Height = chatPanel.Height;
+            richTextBox.Text = "";
+            richTextBox.SelectionStart = richTextBox.Text.Length;
+            richTextBox.ScrollToCaret();
+            ChatWindow.Add(blobName, richTextBox);
         }
 
         private void SetNotificationMessage(string text)
@@ -220,6 +169,14 @@ namespace SkypeChatClient
         {
             //URIがクリックされたら、ブラウザを起動
             System.Diagnostics.Process.Start(e.LinkText);
+        }
+
+        private void debugToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            chatPanel.Controls.Clear();
+            var rich = new RichTextBox();
+            rich.Text = "bunbunbun";
+            chatPanel.Controls.Add(rich);
         }
     }
 }

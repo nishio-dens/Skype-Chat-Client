@@ -46,7 +46,7 @@ namespace SkypeChatClient
     {
         AxSkype Skype { get; set; }
 
-        IList<IChatMessage> ReceivedMessages { get; set; }
+        public IList<IChatMessage> ReceivedMessages { get; private set; }
         IList<Chat> ChatGroups { get; set; }
         IChatMessage RecentlyReceivedMessage { get; set; }
         IList<MessageReceivedListener> ReceivedMessageListeners { get; set; }

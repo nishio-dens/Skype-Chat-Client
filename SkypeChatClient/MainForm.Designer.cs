@@ -36,7 +36,6 @@
             this.SendChatButton = new System.Windows.Forms.Button();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.ChatTabControl = new System.Windows.Forms.TabControl();
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.autoScrollCheckBox = new System.Windows.Forms.CheckBox();
             this.skype = new AxSKYPE4COMLib.AxSkype();
@@ -45,6 +44,8 @@
             this.AttachSkypeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.メッセージ再読み込みToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ExitClientToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.chatPanel = new System.Windows.Forms.Panel();
+            this.debugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.skype)).BeginInit();
             this.menuStrip1.SuspendLayout();
@@ -52,7 +53,7 @@
             // 
             // RoomList
             // 
-            this.RoomList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.RoomList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.RoomList.Font = new System.Drawing.Font("MS UI Gothic", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.RoomList.FormattingEnabled = true;
@@ -65,7 +66,7 @@
             // 
             // label1
             // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(548, 8);
@@ -76,7 +77,7 @@
             // 
             // ChatBox
             // 
-            this.ChatBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.ChatBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.ChatBox.Location = new System.Drawing.Point(5, 474);
             this.ChatBox.Multiline = true;
@@ -112,18 +113,6 @@
             this.toolStripStatusLabel.Name = "toolStripStatusLabel";
             this.toolStripStatusLabel.Size = new System.Drawing.Size(140, 18);
             this.toolStripStatusLabel.Text = "ここにステータスを表示";
-            // 
-            // ChatTabControl
-            // 
-            this.ChatTabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.ChatTabControl.Location = new System.Drawing.Point(1, 35);
-            this.ChatTabControl.Name = "ChatTabControl";
-            this.ChatTabControl.SelectedIndex = 0;
-            this.ChatTabControl.Size = new System.Drawing.Size(517, 436);
-            this.ChatTabControl.TabIndex = 0;
-            this.ChatTabControl.SelectedIndexChanged += new System.EventHandler(this.ChatTabControl_SelectedIndexChanged);
             // 
             // notifyIcon
             // 
@@ -168,7 +157,8 @@
             this.クライアントToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.AttachSkypeToolStripMenuItem,
             this.メッセージ再読み込みToolStripMenuItem,
-            this.ExitClientToolStripMenuItem});
+            this.ExitClientToolStripMenuItem,
+            this.debugToolStripMenuItem});
             this.クライアントToolStripMenuItem.Name = "クライアントToolStripMenuItem";
             this.クライアントToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
             this.クライアントToolStripMenuItem.Text = "クライアント";
@@ -193,11 +183,29 @@
             this.ExitClientToolStripMenuItem.Text = "クライアントを終了する";
             this.ExitClientToolStripMenuItem.Click += new System.EventHandler(this.ExitClientToolStripMenuItem_Click);
             // 
+            // chatPanel
+            // 
+            this.chatPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chatPanel.Location = new System.Drawing.Point(5, 35);
+            this.chatPanel.Name = "chatPanel";
+            this.chatPanel.Size = new System.Drawing.Size(513, 433);
+            this.chatPanel.TabIndex = 20;
+            // 
+            // debugToolStripMenuItem
+            // 
+            this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
+            this.debugToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
+            this.debugToolStripMenuItem.Text = "Debug";
+            this.debugToolStripMenuItem.Click += new System.EventHandler(this.debugToolStripMenuItem_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(719, 639);
+            this.Controls.Add(this.chatPanel);
             this.Controls.Add(this.autoScrollCheckBox);
             this.Controls.Add(this.skype);
             this.Controls.Add(this.statusStrip1);
@@ -206,7 +214,6 @@
             this.Controls.Add(this.ChatBox);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.RoomList);
-            this.Controls.Add(this.ChatTabControl);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainForm";
@@ -230,7 +237,6 @@
         private System.Windows.Forms.Button SendChatButton;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel;
-        private System.Windows.Forms.TabControl ChatTabControl;
         private AxSKYPE4COMLib.AxSkype skype;
         private System.Windows.Forms.NotifyIcon notifyIcon;
         private System.Windows.Forms.CheckBox autoScrollCheckBox;
@@ -239,6 +245,8 @@
         private System.Windows.Forms.ToolStripMenuItem AttachSkypeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem メッセージ再読み込みToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ExitClientToolStripMenuItem;
+        private System.Windows.Forms.Panel chatPanel;
+        private System.Windows.Forms.ToolStripMenuItem debugToolStripMenuItem;
     }
 }
 
