@@ -50,14 +50,11 @@ namespace SkypeChatClient
             }
         }
 
-        /// <summary>
-        /// 指定したチャットに指定したメッセージを送信します。
-        /// </summary>
-        /// <param name="chat"></param>
-        /// <param name="text"></param>
-        public static void SendMessage(Chat chat, string text)
+        public void ReloadAllMessages()
         {
-            chat.SendMessage(text);
+            throw new NotImplementedException();
         }
+
+
     }
 }
