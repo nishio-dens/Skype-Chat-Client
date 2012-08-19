@@ -65,20 +65,17 @@ namespace SkypeChatClient
 
         void ReloadRoomsAndMessages()
         {
-            Task.Factory.StartNew(() =>
+            Client.ReloadAllMessages();
+            var rooms = Client.GetChatRooms()
+                .OrderByDescending(t => t.Timestamp)
+                .Select(i => i.FriendlyName);
+
+            RoomList.Items.Clear();
+
+            foreach (var room in rooms)
             {
-                Client.ReloadAllMessages();
-                var rooms = Client.GetChatRooms()
-                    .OrderByDescending(t => t.Timestamp)
-                    .Select(i => i.FriendlyName);
-
-                RoomList.Items.Clear();
-
-                foreach (var room in rooms)
-                {
-                    RoomList.Items.Add(room);
-                }
-            });
+                RoomList.Items.Add(room);
+            }
         }
 
         /// <summary>
