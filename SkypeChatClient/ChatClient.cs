@@ -24,6 +24,17 @@ namespace SkypeChatClient
             }
             return messages;
         }
+
+        public static string GetFormattedMessage(this IChatMessage message)
+        {
+            return String.Format("{0:00}/{1:00}/{2:00}:{3:00} {4, -15}: {5}",
+                message.Timestamp.Month,
+                message.Timestamp.Day,
+                message.Timestamp.Hour,
+                message.Timestamp.Minute,
+                message.FromHandle,
+                message.Body);
+        }
     }
 
     public class ChatClient
