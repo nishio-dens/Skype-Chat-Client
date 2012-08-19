@@ -27,9 +27,6 @@ namespace SkypeChatClient
         {
             InitializeComponent();
             this.FormClosing += new FormClosingEventHandler(this.MainForm_Closed);
-            Client = new ChatClient(skype);
-            Client.AttachToSkypeClient();
-            Client.AddMessageReceivedListener(new Baloon(notifyIcon));
 
             ChatListWindow = new Dictionary<string, ListBox>();
             ChatTabs = new Dictionary<string, TabPage>();
@@ -37,17 +34,28 @@ namespace SkypeChatClient
             SelectedTabIndex = 0;
 
             ChatBox.KeyUp += (obj, e) =>
+            {
+                if (e.KeyCode == Keys.Enter && e.Modifiers != Keys.Shift)
                 {
-                    if (e.KeyCode == Keys.Enter && e.Modifiers != Keys.Shift)
+                    //最後が改行の時だけ反応させる
+                    if (ChatBox.Text.EndsWith("\n"))
                     {
-                        //最後が改行の時だけ反応させる
-                        if (ChatBox.Text.EndsWith("\n"))
-                        {
-                            //メッセージ送信
-                            SendMessageFromTextBox();
-                        }
+                        SendMessageFromTextBox();
                     }
-                };
+                }
+            };
+        }
+
+        void AttachSkypeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AttachSkype();
+        }
+
+        void AttachSkype()
+        {
+            Client = new ChatClient(skype);
+            Client.AttachToSkypeClient();
+            Client.AddMessageReceivedListener(new Baloon(notifyIcon));
         }
 
         /// <summary>
@@ -82,7 +90,7 @@ namespace SkypeChatClient
             var chatPage = new TabPage();
             var chatList = new ListBox();
             chatList.Dock = DockStyle.Fill;
-            chatList.Font = new Font("ＭＳ ゴシック", 9);
+            chatList.Font = new Font("ＭＳ ゴシック", 11);
             chatList.HorizontalScrollbar = true;
             chatList.Click += (obj, eventHandler) =>
             {
@@ -146,7 +154,6 @@ namespace SkypeChatClient
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-
         }
 
         void MainForm_Closed(object sender, System.ComponentModel.CancelEventArgs e)
@@ -155,6 +162,11 @@ namespace SkypeChatClient
             {
                 e.Cancel = true;
             }
+        }
+
+        private void ExitClientToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            System.Windows.Forms.Application.Exit();
         }
 
         /// <summary>
@@ -190,22 +202,5 @@ namespace SkypeChatClient
             //URIがクリックされたら、ブラウザを起動
             System.Diagnostics.Process.Start(e.LinkText);
         }
-
-        private void notifyIcon_BalloonTipClicked(object sender, EventArgs e)
-        {
-            //// 受信したチャットメッセージを表示するタブを設定
-            //try
-            //{
-            //    ChatTabControl.SelectedTab = ChatTabs[RecentReceivedChatBlob];
-            //    // メインウィンドウを表示
-            //    this.WindowState = FormWindowState.Normal;
-            //    this.Activate();
-            //}
-            //catch
-            //{
-            //    MessageBox.Show("タブが存在しませんでした。");
-            //}
-        }
-
     }
 }

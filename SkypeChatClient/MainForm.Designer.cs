@@ -42,9 +42,9 @@
             this.skype = new AxSKYPE4COMLib.AxSkype();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.クライアントToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.skype連携を行うToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.AttachSkypeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.メッセージ再読み込みToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.クライアントを終了するToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ExitClientToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.skype)).BeginInit();
             this.menuStrip1.SuspendLayout();
@@ -128,7 +128,6 @@
             this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
             this.notifyIcon.Text = "TIM Skype Chat Client";
             this.notifyIcon.Visible = true;
-            this.notifyIcon.BalloonTipClicked += new System.EventHandler(this.notifyIcon_BalloonTipClicked);
             // 
             // autoScrollCheckBox
             // 
@@ -165,18 +164,19 @@
             // クライアントToolStripMenuItem
             // 
             this.クライアントToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.skype連携を行うToolStripMenuItem,
+            this.AttachSkypeToolStripMenuItem,
             this.メッセージ再読み込みToolStripMenuItem,
-            this.クライアントを終了するToolStripMenuItem});
+            this.ExitClientToolStripMenuItem});
             this.クライアントToolStripMenuItem.Name = "クライアントToolStripMenuItem";
             this.クライアントToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
             this.クライアントToolStripMenuItem.Text = "クライアント";
             // 
-            // skype連携を行うToolStripMenuItem
+            // AttachSkypeToolStripMenuItem
             // 
-            this.skype連携を行うToolStripMenuItem.Name = "skype連携を行うToolStripMenuItem";
-            this.skype連携を行うToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
-            this.skype連携を行うToolStripMenuItem.Text = "Skype連携を行う";
+            this.AttachSkypeToolStripMenuItem.Name = "AttachSkypeToolStripMenuItem";
+            this.AttachSkypeToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
+            this.AttachSkypeToolStripMenuItem.Text = "Skype連携を行う";
+            this.AttachSkypeToolStripMenuItem.Click += new System.EventHandler(this.AttachSkypeToolStripMenuItem_Click);
             // 
             // メッセージ再読み込みToolStripMenuItem
             // 
@@ -184,11 +184,12 @@
             this.メッセージ再読み込みToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
             this.メッセージ再読み込みToolStripMenuItem.Text = "メッセージ再読み込み";
             // 
-            // クライアントを終了するToolStripMenuItem
+            // ExitClientToolStripMenuItem
             // 
-            this.クライアントを終了するToolStripMenuItem.Name = "クライアントを終了するToolStripMenuItem";
-            this.クライアントを終了するToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
-            this.クライアントを終了するToolStripMenuItem.Text = "クライアントを終了する";
+            this.ExitClientToolStripMenuItem.Name = "ExitClientToolStripMenuItem";
+            this.ExitClientToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
+            this.ExitClientToolStripMenuItem.Text = "クライアントを終了する";
+            this.ExitClientToolStripMenuItem.Click += new System.EventHandler(this.ExitClientToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -233,9 +234,9 @@
         private System.Windows.Forms.CheckBox autoScrollCheckBox;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem クライアントToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem skype連携を行うToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem AttachSkypeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem メッセージ再読み込みToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem クライアントを終了するToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ExitClientToolStripMenuItem;
     }
 }
 
